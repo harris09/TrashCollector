@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="LibraryTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-04-23T18:21:04" hostname="DELL1" time="2.769">
+  <properties/>
+  <testcase name="testSomeLibraryMethod" classname="LibraryTest" time="2.769"/>
+  <system-out><![CDATA[{
+  "originAddresses": [
+    "",
+    ""
+  ],
+  "destinationAddresses": [
+    "",
+    ""
+  ],
+  "rows": [
+    {
+      "elements": [
+        {
+          "status": "NOT_FOUND"
+        },
+        {
+          "status": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "elements": [
+        {
+          "status": "NOT_FOUND"
+        },
+        {
+          "status": "NOT_FOUND"
+        }
+      ]
+    }
+  ]
+}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
