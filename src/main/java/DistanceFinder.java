@@ -1,14 +1,10 @@
 import java.io.IOException;
-import java.util.HashMap;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.maps.DirectionsApi.RouteRestriction;
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
-import com.google.maps.GeocodingApiRequest;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.GeocodingResult;
@@ -20,94 +16,45 @@ import com.google.maps.model.TravelMode;
  */
 public class DistanceFinder {
 	static String API_KEY = "AIzaSyCpOGjDglR5_pLm0T9AlPZv_pDlbz8FYN0";
-	public static void main(String[] args) {
-        //getDistance();
-        //getGeoCode();  
-		
-		HashMap<Integer, String> latLongMap = InputManager.readExelData();
-		
-		HashMap<Integer, String> distanceMap = getDistance(latLongMap);
-		
-        InputManager.writeDistanceToExcellData(distanceMap);
-        
-    }
-	
-    public boolean someLibraryMethod() {
-        return true;
-    }
-    public static HashMap<Integer, String> getDistance(HashMap<Integer, String> latLongMap) {
-    	HashMap<Integer, String> distanceMap = new HashMap<Integer, String>();
-        
-    	for (HashMap.Entry<Integer, String> entry : latLongMap.entrySet()) {
-/*		    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());*/
-		    String latlongStr = entry.getValue();
-			String[] latlongArr = latlongStr.split(",");
-			Double lat = Double.parseDouble(latlongArr[0]);
-			Double lon = Double.parseDouble(latlongArr[1]);	   
-			
-	    	GeoApiContext distCalcer = new GeoApiContext.Builder()
-		    .apiKey(API_KEY)
-		    .build();
-			
-			DistanceMatrixApiRequest req = DistanceMatrixApi.newRequest(distCalcer);
-			LatLng addrOneLatLng  = new LatLng(49.013411, 12.097774);
-			LatLng addrTwoLatLng  = new LatLng(lat, lon);
-			GeocodingResult[] addrOne = null;
-			GeocodingResult[] addrTwo = null;
-			try {
-				addrOne = GeocodingApi.reverseGeocode(distCalcer, addrOneLatLng).await();
-				addrTwo = GeocodingApi.reverseGeocode(distCalcer, addrTwoLatLng).await();;
-			} catch (ApiException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			};
-
-		    System.out.println("Source: "+addrOne[0].formattedAddress);
-		    System.out.println("Destination: "+addrTwo[0].formattedAddress);
-			DistanceMatrix result = null;
-			try {
-				result = req.origins(addrOne[0].formattedAddress)
-				       .destinations(addrTwo[0].formattedAddress)
-				       .mode(TravelMode.DRIVING)
-				       .avoid(RouteRestriction.TOLLS)
-				       .language("en-US")
-				       .await();
-			} catch (ApiException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	   
-			//long distApart = result.rows[0].elements[0].distance.inMeters;
-		    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		    //System.out.println(gson.toJson(result));
-		    System.out.println("Key :"+entry.getKey() + " Distance :"+result.rows[0].elements[0].distance.humanReadable);
-		    distanceMap.put(entry.getKey(), result.rows[0].elements[0].distance.humanReadable);
-		}
-    	
-
-        return distanceMap;
-    }
     
-    public static void getGeoCode() {
-    	GeoApiContext context = new GeoApiContext.Builder()
-        .apiKey("AIzaSyCpOGjDglR5_pLm0T9AlPZv_pDlbz8FYN0")
-        .build();
-	    GeocodingResult[] results = null;
+    public static String[] getDistance(String[] latlongArrSrc, String[] latlongArrDist) {
+		Double latSrc = Double.parseDouble(latlongArrSrc[0]);
+		Double lonSrc = Double.parseDouble(latlongArrSrc[1]);	
+		Double latDist = Double.parseDouble(latlongArrDist[0]);
+		Double lonDist = Double.parseDouble(latlongArrDist[1]);	      
+				
+    	GeoApiContext distCalcer = new GeoApiContext.Builder().apiKey(API_KEY).build();
+		
+		DistanceMatrixApiRequest req = DistanceMatrixApi.newRequest(distCalcer);
+		LatLng addrOneLatLng  = new LatLng(latSrc, lonSrc);
+		LatLng addrTwoLatLng  = new LatLng(latDist, lonDist);
+		GeocodingResult[] addrOne = null;
+		GeocodingResult[] addrTwo = null;
 		try {
-			results = GeocodingApi.geocode(context,
-			    "1600 Amphitheatre Parkway Mountain View, CA 94043").await();
+			addrOne = GeocodingApi.reverseGeocode(distCalcer, addrOneLatLng).await();
+			addrTwo = GeocodingApi.reverseGeocode(distCalcer, addrTwoLatLng).await();;
+		} catch (ApiException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		};
+
+	    System.out.println("Source: "+addrOne[0].formattedAddress);
+	    System.out.println("Destination: "+addrTwo[0].formattedAddress);
+	    
+		DistanceMatrix result = null;
+		try {
+			result = req.origins(addrOne[0].formattedAddress)
+			       .destinations(addrTwo[0].formattedAddress)
+			       .mode(TravelMode.DRIVING)
+			       .avoid(RouteRestriction.TOLLS)
+			       .language("en-US")
+			       .await();
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -118,7 +65,15 @@ public class DistanceFinder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	    System.out.println(gson.toJson(results[0].addressComponents));
+
+		String[] resultArray = new String[3];
+		resultArray[0] = addrOne[0].formattedAddress;
+		resultArray[1] = addrTwo[0].formattedAddress;
+		resultArray[2] = result.rows[0].elements[0].distance.humanReadable;
+        return resultArray;
     }
+    
+    public boolean someLibraryMethod() {
+        return true;
+    }    
 }
