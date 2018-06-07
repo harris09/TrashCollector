@@ -1,18 +1,13 @@
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -23,31 +18,31 @@ public class InputManager {
     static HashMap<Integer, String> readExelData() {
     	HashMap<Integer, String> latLongMap = new HashMap<Integer, String>();
     	try {
-    		String filename = System.getProperty("user.dir") + "\\input\\can_list\\TourSheet.xlsx";
+    		String filename = System.getProperty("user.dir") + "\\data\\tour_sheets\\TourSheet_Friday.xlsx";
             FileInputStream file = new FileInputStream(new File(filename));
- 
+    	
             // Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
- 
             // Get first/desired sheet from the workbook
-            XSSFSheet sheet = workbook.getSheetAt(0);
- 
-            // Iterate through each rows one by one
-            Iterator<Row> rowIterator = sheet.iterator();
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
+            XSSFSheet sheet = workbook.getSheetAt(0); 
+            int start, end, count;
+                
+            Row row = sheet.getRow(2);
+            Cell cell = row.getCell(1);
+            start = ((int) cell.getNumericCellValue()) - 1;
+            count = start;
+            cell = row.getCell(3);
+            end = ((int) cell.getNumericCellValue()) - 1;
+                
+            while(count <= end)
+            {
+            	row = sheet.getRow(count);
                 Cell cellLat = row.getCell(3);
-                Cell cellLong = row.getCell(4);
-                if(row.getRowNum() >= 5 && cellLat != null && cellLong != null) {
-                    if(cellLat.getCellType() != Cell.CELL_TYPE_BLANK && cellLong.getCellType() != Cell.CELL_TYPE_BLANK) {
-                        String latlong = cellLat.getStringCellValue() +","+ cellLong.getStringCellValue(); 
-        
-/*                        System.out.println("cellLat = " + cellLat.getStringCellValue() + ", cellLong = " + cellLong.getStringCellValue());*/
-                        latLongMap.put(row.getRowNum(), latlong);
-                    }                	
-                }
-            }
-            file.close();
+                Cell cellLong = row.getCell(4); 
+                String latlong = calculateGeoCoordinate(cellLat.getNumericCellValue()) +","+ calculateGeoCoordinate(cellLong.getNumericCellValue()); 
+                latLongMap.put(row.getRowNum(), latlong);
+                count++;
+            }            
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +50,35 @@ public class InputManager {
 		return latLongMap;
     }	
     
-    static void writeDistanceToExcellData(HashMap<Integer, String> distanceMap) {
+	public static double calculateGeoCoordinate(double gpsCoordinate) {
+		double geoCoordinate, coordinateRest;
+		boolean coordinateNegative = false;
+		
+		// Check if coordinate is negative
+		if(gpsCoordinate < 0) {
+			coordinateNegative = true;
+			gpsCoordinate = gpsCoordinate * -1;
+		}
+		
+		gpsCoordinate = gpsCoordinate / 100000;
+		
+		// Calculate geoCoordinate
+		geoCoordinate= ((int) gpsCoordinate);
+		coordinateRest = gpsCoordinate - geoCoordinate;
+		coordinateRest = (coordinateRest * 60) / 100;
+		geoCoordinate = geoCoordinate + coordinateRest;
+		// Round result
+		geoCoordinate = geoCoordinate * 100000;
+		geoCoordinate = Math.round(geoCoordinate);
+		geoCoordinate = geoCoordinate / 100000;
+		
+		if(coordinateNegative)
+			geoCoordinate = geoCoordinate * -1;
+		
+		return geoCoordinate;
+	}
+/*    
+	static void writeDistanceToExcellData(HashMap<Integer, String> distanceMap) {
 		String filename = System.getProperty("user.dir") + "\\input\\can_list\\TourSheet.xlsx";
         
         Workbook wb = null;
@@ -94,4 +117,6 @@ public class InputManager {
 			e.printStackTrace();
 		}
     }
+*/
+    
 }
