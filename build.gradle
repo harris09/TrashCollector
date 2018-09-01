@@ -37,6 +37,10 @@ dependencies {
 	compile 'org.apache.poi:poi-ooxml-schemas:3.9'
 	compile 'org.apache.poi:poi-scratchpad:3.9'
 	compile 'org.apache.xmlbeans:xmlbeans:2.5.0'
+	
+	compile 'org.mongodb:mongo-java-driver:2.12.3'
+	
+	compile 'mysql:mysql-connector-java:5.1.6'
         
 }
 
