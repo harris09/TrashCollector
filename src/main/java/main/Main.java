@@ -23,10 +23,10 @@ import com.google.maps.GeoApiContext;
 
 public class Main {
 	
-	static String API_KEY1 = "AIzaSyA524sVCZwD55K1CRjyqTJGE5vh5KiQdOk";
+//	static String API_KEY1 = "AIzaSyA524sVCZwD55K1CRjyqTJGE5vh5KiQdOk";
 //	static String API_KEY2 = "AIzaSyCpOGjDglR5_pLm0T9AlPZv_pDlbz8FYN0";
-	static String API_KEY3 = "AIzaSyBOX9qnw0MGzYkZqDPgbpr77LS5UMNI8eY";
-	static String API_KEY4 = "AIzaSyCBR7GyIOoU5BflZSn6d5U1PKcH44PshpA";
+//	static String API_KEY3 = "AIzaSyBOX9qnw0MGzYkZqDPgbpr77LS5UMNI8eY";
+//	static String API_KEY4 = "AIzaSyCBR7GyIOoU5BflZSn6d5U1PKcH44PshpA";
 	static String API_KEY5 = "AIzaSyAFWxj5CvZMSgwaNtwt7MxY98N9M2KFYsg";
 	static String API_KEY6 = "AIzaSyBA7HnQ_X6qTD6ykcq-1Zcgy1CHi3_1jRY";	
 	static String API_KEY7 = "AIzaSyAA56vsJT0u9lRjglNigkNn9g1cTNiwT9A";
@@ -88,10 +88,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		ArrayList<String> apiKeys = new ArrayList<String>();
-		apiKeys.add(API_KEY1);
+//		apiKeys.add(API_KEY1);
 //		apiKeys.add(API_KEY2);
-		apiKeys.add(API_KEY3);
-		apiKeys.add(API_KEY4);
+//		apiKeys.add(API_KEY3);
+//		apiKeys.add(API_KEY4);
 		apiKeys.add(API_KEY5);
 		apiKeys.add(API_KEY6);
 		apiKeys.add(API_KEY7);
@@ -150,16 +150,21 @@ public class Main {
 		apiKeys.add(API_KEY60);
 		apiKeys.add(API_KEY61);
 		
-//		writeDistancesToXLS(apiKeys);
-//        try {
-//			//MySQLAccess.writeallAddressesToSQLDB();
-//			MySQLAccess.writeAddressesToSQLDB();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//writeDistancesToXLS(apiKeys);
+		
+		//to be removed
+    	//writeDistancesToXLS2(apiKeys);			
+        try {			
+        	MySQLAccess.writeAddressesToSQLDB2();
+
+    		//to be removed
+        	//MySQLAccess.readExelDataAndInsertToDB22();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
-        try {
+ /*       try {
 			TSPGenerator.createOutputTspFile();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -167,7 +172,7 @@ public class Main {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
 	
 	public static boolean writeDistancesToXLS(ArrayList<String> apiKeys) {
@@ -280,5 +285,173 @@ public class Main {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static boolean writeDistancesToXLS2(ArrayList<String> apiKeys) {
+		LinkedHashMap<Integer, String> latLongMap = InputManager.readExelData();
+		
+		for (int j = 0; j < apiKeys.size(); j++) {
+			try {
+				String apiKey = apiKeys.get(j);
+				System.out.println("ApiKey = " + apiKey);
+				GeoApiContext distCalcer = new GeoApiContext.Builder().apiKey(apiKey).build();
+//				LinkedHashMap<Integer, String> latLongMap = InputManager.readExelData();
+				
+			    //to be removed
+				String[] myList = {"Stadlerstraﬂe 5 93053 Regensburg","Karl-Esser-Straﬂe 2 93049 Regensburg","An der Irler Hˆhe 38 93055 Regensburg","Hochweg 46 93049 Regensburg","Margaretenau 24 93049 Regensburg","Kager 7 93059 Regensburg","Riesengebirgstraﬂe 79 93057 Regensburg","Ernst-Reuter-Platz 2, 93047 Regensburg","Gr‰ﬂlstraﬂe 93059 Regensburg","David-Funk-Straﬂe 28 93055 Regensburg","Ziegetsdorfer Str. 24 93051 Regensburg","Auweg 21 93055 Regensburg","Irl 8 93055 Regensburg","Irl 19 93055 Regensburg","Sophie-Scholl-Straﬂe 78 93055 Regensburg"};
+				for (String address : myList) {
+				    		String srcAddressFormatted = address;
+				    		
+				    		boolean fileAlreadyExist = false;
+				    		//check if the file already exist with the source name
+				    		File folder = new File(System.getProperty("user.dir") + "/data/gmap_distances/TourSheet_Complete/");
+				    		File[] listOfFiles = folder.listFiles();
+				    		for (File file : listOfFiles) {
+				    		    if (file.isFile()) {
+				    	    		String addressToMatch = srcAddressFormatted + "3.xlsx";
+				    		        if(addressToMatch.equals(file.getName())) {
+				    		        	fileAlreadyExist = true;
+					    	    		System.out.println("addressToMatch :"+ addressToMatch);
+					    	    		System.out.println("listOfFiles :"+ file.getName());
+				    		        	break;
+				    		        }
+				    		    }
+				    		}
+	
+				    		if(!fileAlreadyExist) {
+							     // Create a Workbook
+						        Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+						        // Create a Sheet
+						        Sheet sheet = workbook.createSheet("sheet");
+						        // Create a Font for styling header cells
+						        Font headerFont = workbook.createFont();
+						        headerFont.setBoldweight((short) 14);
+						        headerFont.setFontHeightInPoints((short) 14);
+						        headerFont.setColor(IndexedColors.RED.getIndex());
+						        // Create a CellStyle with the font
+						        CellStyle headerCellStyle = workbook.createCellStyle();
+						        headerCellStyle.setFont(headerFont);
+						        // Create header Row
+						        Row headerRow = sheet.createRow(0);
+						        // Create cells
+						        String[] columns = {"Source", "Destination", "Distancein Km"};
+						        for(int i = 0; i < columns.length; i++) {
+						            Cell cell = headerRow.createCell(i);
+						            cell.setCellValue(columns[i]);
+						            cell.setCellStyle(headerCellStyle);
+						        }
+					
+						        int rowNum = 1;
+									for (String address2 : myList)
+									{
+						    		String distAddressFormatted = address2;
+						    		System.out.println("srcAddressFormatted :"+ srcAddressFormatted);
+						    		System.out.println("distAddressFormatted :"+ distAddressFormatted);
+									if(address != address2) {
+							    		String distanceBwSrcAndDist = DistanceFinder.getDistance(srcAddressFormatted,distAddressFormatted,distCalcer);
+							    		System.out.println("Distance :"+ distanceBwSrcAndDist);
+							    	    
+								        // Create Other rows and cells with employees data
+							            Row row = sheet.createRow(rowNum++);
+							            row.createCell(0).setCellValue(srcAddressFormatted);
+							            row.createCell(1).setCellValue(distAddressFormatted);
+							            row.createCell(2).setCellValue(distanceBwSrcAndDist);
+									}
+						    	}
+								
+								// Resize all columns to fit the content size
+						        for(int i = 0; i < columns.length; i++) {
+						            sheet.autoSizeColumn(i);
+						        }
+						        
+						        // Write the output to a file
+						        FileOutputStream fileOut;
+								try {
+						    		String filename = System.getProperty("user.dir") + "\\data\\gmap_distances\\TourSheet_Complete\\"+srcAddressFormatted+"3.xlsx";
+									fileOut = new FileOutputStream(new File(filename));
+							        workbook.write(fileOut);
+							        fileOut.close();
+							        // Closing the workbook
+							        //workbook.close();
+								} catch (FileNotFoundException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+				    		} else {
+			    		        System.out.println("File already exist with the name: " + srcAddressFormatted);
+				    		}
+			    	
+				}
+			}
+	        catch(NullPointerException e)
+	        {
+	            System.out.print("NullPointerException caught");
+	        }
+		}
+		return true;	
+	}
+	
+
 	
 }

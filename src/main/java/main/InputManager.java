@@ -59,7 +59,7 @@ public class InputManager {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
+        }    	
 		return latLongMap;
     }	
     
